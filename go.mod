@@ -1,9 +1,10 @@
-module github.com/bebe-pirat/golang_log_linter
+module github.com/bebe-pirat/loglinter
 
 go 1.25.7
+
+require golang.org/x/tools v0.42.0
 
 require (
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/tools v0.42.0 // indirect
 )

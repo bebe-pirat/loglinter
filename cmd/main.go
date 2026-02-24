@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/bebe-pirat/golang_log_linter/analyzer"
+	"github.com/bebe-pirat/loglinter/pkg/analyzer"
 	"golang.org/x/tools/go/analysis/singlechecker"
 )
 
 func main() {
-	singlechecker.Main(analyzer.NewLogChecker())
+	singlechecker.Main(analyzer.Analyzer)
 }
