@@ -1,0 +1,11 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - loglinter
+
+linters-settings:
+  custom:
+    loglinter:
+      path: ./bin/my-golangci-lint

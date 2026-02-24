@@ -1,0 +1,8 @@
+version: v2.10.1
+name: my-golangci-lint
+destination: ./bin
+
+plugins:
+  - module: 'github.com/bebe-pirat/loglinter'
+    import: 'github.com/bebe-pirat/loglinter/pkg/plugin'
+    path: ./

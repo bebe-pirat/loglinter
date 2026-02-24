@@ -2,7 +2,6 @@ package analyzer
 
 import (
 	"go/ast"
-	"go/token"
 	"go/types"
 	"regexp"
 	"strconv"
@@ -20,7 +19,7 @@ var Analyzer = &analysis.Analyzer{
 	Requires: []*analysis.Analyzer{inspect.Analyzer},
 }
 
-func NewLogChecker() *analysis.Analyzer {
+func New() *analysis.Analyzer {
 	return Analyzer
 }
 
@@ -71,7 +70,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 			}
 
 			if message != "" {
-				return checkLogMessage(pass, callExpr.Pos(), message)
+				return checkLogMessage(pass, firstParam, message)
 			}
 
 			return true
@@ -81,26 +80,42 @@ func run(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func checkLogMessage(pass *analysis.Pass, pos token.Pos, message string) bool {
+func checkLogMessage(pass *analysis.Pass, node ast.Expr, message string) bool {
 	runes := []rune(message)
 
 	if !isFirstSymbolLowerCase(runes) {
-		pass.Reportf(pos, "first letter in log message should be lowercase")
+		newParam := strconv.Quote(firstSymbolToLowercase(runes))
+		pass.Report(analysis.Diagnostic{
+			Pos:     node.Pos(),
+			End:     node.End(),
+			Message: "first letter in log message should be lowercase",
+			SuggestedFixes: []analysis.SuggestedFix{
+				{
+					TextEdits: []analysis.TextEdit{
+						{
+							Pos:     node.Pos(),
+							End:     node.End(),
+							NewText: []byte(newParam),
+						},
+					},
+				},
+			},
+		})
 		return true
 	}
 
 	if !isStringEnglish(runes) {
-		pass.Reportf(pos, "log message should contain only English characters")
+		pass.Reportf(node.Pos(), "log message should contain only English characters")
 		return true
 	}
 
 	if containsSpecialSymbolsOrEmoji(message) {
-		pass.Reportf(pos, "log message contains special symbols or emoji")
+		pass.Reportf(node.Pos(), "log message contains special symbols or emoji")
 		return true
 	}
 
 	if containsSensitiveKeyword(message) {
-		pass.Reportf(pos, "log message may contain sensitive data")
+		pass.Reportf(node.Pos(), "log message may contain sensitive data")
 		return true
 	}
 
@@ -170,4 +185,12 @@ func containsSensitiveKeyword(s string) bool {
 	}
 
 	return false
+}
+
+func firstSymbolToLowercase(runes []rune) string {
+	if len(runes) > 0 {
+		runes[0] = unicode.ToLower(runes[0])
+	}
+
+	return string(runes)
 }
