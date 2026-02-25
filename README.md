@@ -7,3 +7,7 @@
 **Пример запуска**
 1. golangci-lint custom -v 
 2. ./bin/my-golangci-lint run ./example.go
+
+**Запуск тестов**
+1. cd pkg/analyzer
+2. go test
