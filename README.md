@@ -22,6 +22,7 @@
 **Пример запуска**
 1. golangci-lint custom -v 
 2. ./bin/my-golangci-lint run ./example.go
+
 **Пример вывода линтера**
 ```
 example.go:28:12: first letter in log message should be lowercase (loglinter)
@@ -55,4 +56,5 @@ loglinter: 8
 **Запуск тестов**
 1. cd pkg/analyzer
 2. go test
+
 
