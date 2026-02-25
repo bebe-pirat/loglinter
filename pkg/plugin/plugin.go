@@ -2,18 +2,24 @@ package plugin
 
 import (
 	"github.com/bebe-pirat/loglinter/pkg/analyzer"
-	"github.com/golangci/golangci-lint/v2/pkg/goanalysis"
-	"github.com/golangci/golangci-lint/v2/pkg/lint/linter"
+	"github.com/golangci/plugin-module-register/register"
 	"golang.org/x/tools/go/analysis"
 )
 
-func New() *linter.Config {
-	return &linter.Config{
-		Linter: goanalysis.NewLinter(
-			"loglinter",
-			"Custom linter for log checking",
-			[]*analysis.Analyzer{analyzer.Analyzer},
-			nil,
-		).WithLoadMode(goanalysis.LoadModeSyntax),
-	}
+func init() {
+	register.Plugin("loglinter", New)
+}
+
+func New(setting any) (register.LinterPlugin, error) {
+	return &Plugin{}, nil
+}
+
+type Plugin struct{}
+
+func (p *Plugin) BuildAnalyzers() ([]*analysis.Analyzer, error) {
+	return []*analysis.Analyzer{analyzer.Analyzer}, nil
+}
+
+func (p *Plugin) GetLoadMode() string {
+	return register.LoadModeTypesInfo
 }

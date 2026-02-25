@@ -4,8 +4,8 @@ linters:
   default: none
   enable:
     - loglinter
-
-linters-settings:
-  custom:
-    loglinter:
-      path: ./bin/my-golangci-lint
+  settings:
+    custom:
+      loglinter:
+        type: module
+        description: Custom linter for log checking

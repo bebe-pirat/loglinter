@@ -36,7 +36,10 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				return true
 			}
 
-			obj := pass.TypesInfo.Uses[selExpr.Sel]
+			obj, ok := pass.TypesInfo.Uses[selExpr.Sel]
+			if !ok {
+				return true
+			}
 			fn, ok := obj.(*types.Func)
 			if !ok {
 				return true
